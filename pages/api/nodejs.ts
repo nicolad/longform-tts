@@ -1,9 +1,8 @@
-import random from 'random';
-import shishua from 'shishua';
-import type { NextApiRequest, NextApiResponse } from 'next';
+import random from "random";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 interface Data {
-  runtime: 'node';
+  runtime: "node";
   message: string;
   time: string;
   pi: number;
@@ -11,13 +10,11 @@ interface Data {
 
 export default function handler(
   _req: NextApiRequest,
-  res: NextApiResponse<Data>,
+  res: NextApiResponse<Data>
 ): void {
   const t0 = performance.now();
 
   const seed = Math.floor(Date.now() / 1000);
-
-  random.use(shishua(seed));
 
   const radius = 424242;
   const loops = 1_000_000;
@@ -36,7 +33,7 @@ export default function handler(
   const t1 = performance.now();
 
   res.status(200).json({
-    runtime: 'node',
+    runtime: "node",
     message: `${counter} / ${loops}`,
     time: `${(t1 - t0).toFixed(2)} milliseconds`,
     pi,
