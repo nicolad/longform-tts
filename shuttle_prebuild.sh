@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-apt update && apt install -y nodejs
+apt-get update && apt-get install -y nodejs npm
 
-echo "Installing pnpm..."
-wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
+# Now install pnpm globally
+npm install -g pnpm
 
 echo "Installing dependencies..."
 pnpm install
