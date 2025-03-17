@@ -30,6 +30,6 @@
     "tailwindcss-radix": "^2.8.0"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   }
 }
