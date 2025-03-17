@@ -32,6 +32,6 @@
     "tailwindcss-radix": "^2.8.0"
   },
   "engines": {
-    "node": ">=16 <18"
+    "node": "18.x"
   }
 }
