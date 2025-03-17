@@ -1,5 +1,10 @@
-[build]
-assets = ["frontend/dist/*"]
-
+name = "long"
 [deploy]
-include = ["frontend/dist/*"]
+include = [
+    "dist/*",
+]
+
+[build]
+assets = [
+    "dist/*",
+]
