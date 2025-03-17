@@ -4,3 +4,6 @@ Secrets.toml
 Secrets.dev.toml
 test_sub.sh
 public/
+/target
+.shuttle*
+Secrets*.toml
