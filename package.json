@@ -7,8 +7,7 @@
     "dev": "next dev",
     "lint": "next lint",
     "run": "concurrently -k -p \"[{name}]\" -n \"Next.js,Vercel CLI\" -c \"white.bold,cyan.bold\" \"next dev\" \"vercel dev\"",
-    "start": "next start",
-    "preinstall": "node-gyp install || echo 'node-gyp already installed'"
+    "start": "next start"
   },
   "dependencies": {
     "@types/node": "18.15.3",
@@ -16,7 +15,9 @@
     "@types/react-dom": "18.0.11",
     "@vercel/analytics": "^0.1.11",
     "clsx": "^1.2.1",
-    "next": "13.5.8",
+    "eslint": "8.36.0",
+    "eslint-config-next": "13.2.4",
+    "next": "13.5.0",
     "random": "^4.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -28,7 +29,9 @@
     "concurrently": "^7.6.0",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.2.7",
-    "tailwindcss-radix": "^2.8.0",
-    "node-gyp": "11.1.0"
+    "tailwindcss-radix": "^2.8.0"
+  },
+  "engines": {
+    "node": ">=16 <18"
   }
 }
