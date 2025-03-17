@@ -1,0 +1,40 @@
+@tailwind base;
+
+:root {
+  @apply bg-gray-900 scroll-smooth font-display antialiased;
+}
+
+html {
+  scrollbar-color: #ffffffb3 transparent;
+  scrollbar-width: auto;
+}
+
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-black/50 dark:bg-white/70;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-black/60 dark:hover:bg-white/80;
+}
+
+.h-screen-svh {
+  height: 100vh;
+}
+
+@supports (height: 100svh) {
+  .h-screen-svh {
+    height: 100svh;
+  }
+}
+
+@tailwind components;
+@tailwind utilities;
