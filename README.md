@@ -1,39 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Shuttle SaaS Example
+### Introduction
+This repo is meant to serve as a SaaS template with a Next.js Typescript frontend and a Rust backend. The design of the template internally is based on a sales-oriented Customer Relationship Management (CRM) tool where users will be able to view their customers, sales records as well as some analytics.
 
-## Getting Started
+### Features
+- Take subscription payments with Stripe
+- Email session-based login
+- Mailgun (email subscription, welcome email etc)
+- Pre-configured frontend routes for easy transition
+- Examples of how to implement simple dashboard analytics
 
-First, run the development server:
+### Pre-requisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+* Rust
+
+* Node.js/NPM.
+
+* Typescript.
+
+* [cargo-shuttle](https://www.shuttle.rs)
+
+### Instructions for Usage
+
+* Fork or clone the repo, then navigate to the folder where you cloned the repo:
+
+```
+  git clone https://github.com/joshua-mo-143/shuttle-saas-example.git
+  cd shuttle-saas-example
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* Run `npm i` to install the dependencies on the frontend. 
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+* Set your secrets in the Secrets.toml file at the `Cargo.toml` level of your backend folder (any that are unset will default to "None" to stop the web service from automatically crashing but some services may not work!)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+* Run `npm run dev` and go to [http://localhost:8000](http://localhost:8000) once the app has built and you should see the following:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+![Main page for Next.js + Shuttle Saas Template](./Mainpage.png)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Troubleshooting
 
-## Learn More
+* If you change the migrations after running locally or deploying, you will need to go into the database itself and delete the tables. You can do this easily with something like [psql](https://www.postgresql.org/docs/current/app-psql.html) or [pgAdmin](https://www.pgadmin.org/).
 
-To learn more about Next.js, take a look at the following resources:
+* If connecting to external services like Stripe doesn't work, try checking your Secrets.toml file.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# longform-tts
+* Shuttle connects by default to port 8000 - if you're currently already using something at port 8000, you can add the `--port <port-number>` to the `cargo shuttle run` command to change this.

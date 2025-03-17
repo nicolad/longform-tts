@@ -1,37 +1,38 @@
 {
-  "name": "nextjs",
+  "name": "rustcrm",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
-    "lint": "next lint",
-    "run": "concurrently -k -p \"[{name}]\" -n \"Next.js,Vercel CLI\" -c \"white.bold,cyan.bold\" \"next dev\" \"vercel dev\"",
-    "start": "next start"
+    "dev": "npm run build && concurrently --names 'next, shuttle' --kill-others 'next dev' 'cargo shuttle run --working-directory ./backend/'",
+    "build": "next build && cargo build --manifest-path ./backend/Cargo.toml",
+    "shuttle-login": "cargo shuttle login --working-directory ./backend/",
+    "full": "cargo shuttle run --working-directory backend --port 8001",
+    "start": "cargo shuttle project start --working-directory ./backend/",
+    "stop": "cargo shuttle project stop --working-directory ./backend/",
+    "deploy": "npm run build && cargo shuttle deploy --working-directory ./backend/ --allow-dirty",
+    "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "18.15.3",
-    "@types/react": "18.0.28",
+    "@faker-js/faker": "^7.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "github:fortawesome/react-fontawesome",
+    "@types/node": "18.15.11",
+    "@types/react": "18.0.35",
     "@types/react-dom": "18.0.11",
-    "@vercel/analytics": "^0.1.11",
-    "clsx": "^1.2.1",
-    "eslint": "8.36.0",
-    "eslint-config-next": "13.2.4",
-    "next": "13.5.8",
-    "random": "^4.1.0",
+    "autoprefixer": "10.4.14",
+    "chart.js": "^4.3.0",
+    "concurrently": "^8.0.1",
+    "next": "13.3.0",
+    "postcss": "8.4.21",
     "react": "18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
-    "typescript": "4.9.5"
+    "tailwindcss": "3.3.1",
+    "typescript": "5.0.4",
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.14",
-    "concurrently": "^7.6.0",
-    "postcss": "^8.4.31",
-    "tailwindcss": "^3.2.7",
-    "tailwindcss-radix": "^2.8.0",
-    "vercel-rust": "^4.0.8"
-  },
-  "engines": {
-    "node": "18.x"
+    "eslint": "8.38.0",
+    "eslint-config-next": "13.3.0"
   }
 }
