@@ -12,6 +12,7 @@ pub mod state;
 
 use shuttle_openai::async_openai::{config::OpenAIConfig, Client};
 use shuttle_runtime::DeploymentMetadata;
+use shuttle_runtime::SecretStore;
 use state::AppState;
 use tower_http::{
     cors::CorsLayer,
@@ -23,6 +24,7 @@ async fn main(
     #[shuttle_shared_db::Postgres] conn: String,
     #[shuttle_openai::OpenAI(api_key = "{secrets.OPENAI_API_KEY}")] openai: Client<OpenAIConfig>,
     #[shuttle_runtime::Metadata] metadata: DeploymentMetadata,
+    #[shuttle_runtime::Secrets] secrets: SecretStore,
 ) -> shuttle_axum::ShuttleAxum {
     let state = AppState::new(conn, openai)
         .await
@@ -31,13 +33,14 @@ async fn main(
 
     state.seed().await;
 
+    let openai_api_key = secrets.get("OPENAI_API_KEY").unwrap();
+    std::env::set_var("OPENAI_API_KEY", &openai_api_key);
+
     let origin = if metadata.env == shuttle_runtime::Environment::Deployment {
         format!("{}.shuttle.app", metadata.project_name)
     } else {
         "127.0.0.1:8000".to_string()
     };
-
-    dotenv::dotenv().ok();
 
     let cors = CorsLayer::new()
         .allow_credentials(true)
