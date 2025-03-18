@@ -66,8 +66,7 @@ async fn main(
         .layer(cors)
         .nest_service(
             "/",
-            ServeDir::new("frontend/dist")
-                .not_found_service(ServeFile::new("frontend/dist/index.html")),
+            ServeDir::new("dist").not_found_service(ServeFile::new("dist/index.html")),
         )
         .with_state(state);
 

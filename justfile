@@ -1,19 +1,13 @@
-up:
-    shuttle run
+up: shuttle run
 
-fe:
-    npm --prefix ./frontend run dev
+fe: npm run dev
 
-build:
-    npm --prefix ./frontend run build
+build: npm run build
 
-deploy:
-    build
-    shuttle deploy
+deploy: build
+  shuttle deploy
 
-deploy-ad:
-    build
-    shuttle deploy --ad
+deploy-ad: build
+  shuttle deploy --ad
 
-test:
-    hurl hurl/register.hurl --verbose
+test: hurl hurl/register.hurl --verbose
