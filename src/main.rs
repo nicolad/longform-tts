@@ -37,6 +37,8 @@ async fn main(
         "127.0.0.1:8000".to_string()
     };
 
+    dotenv::dotenv().ok();
+
     let cors = CorsLayer::new()
         .allow_credentials(true)
         .allow_origin(vec![origin.parse().unwrap()])
