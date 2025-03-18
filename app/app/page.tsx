@@ -34,10 +34,9 @@ export default function SpeechPage() {
             rows={5}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="border w-full p-2"
+            className="border w-full p-2 color-black"
           />
         </div>
-
         <button
           type="submit"
           className="px-4 py-2 bg-blue-600 text-white rounded"

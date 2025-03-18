@@ -84,6 +84,22 @@ pub async fn create_chat(State(state): State<AppState>, claims: Claims) -> impl 
     Json(Response::new(convo_id, String::new()))
 }
 
+pub async fn speech(State(state): State<AppState>, claims: Claims) -> impl IntoResponse {
+    let ConversationId(convo_id) = sqlx::query_as(
+        r#"INSERT INTO conversations
+        (user_id)
+        VALUES
+        ($1)
+        RETURNING id"#,
+    )
+    .bind(claims.user_id())
+    .fetch_one(&state.db)
+    .await
+    .unwrap();
+
+    Json(Response::new(convo_id, String::new()))
+}
+
 pub async fn get_conversation_list(
     State(state): State<AppState>,
     claims: Claims,

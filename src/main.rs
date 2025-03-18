@@ -57,6 +57,7 @@ async fn main(
             get(endpoints::openai::get_conversation_list),
         )
         .route("/api/chat/rig", get(endpoints::openai::rig))
+        .route("/api/speech", post(endpoints::openai::speech))
         .route(
             "/api/chat/conversations/:id",
             get(endpoints::openai::fetch_conversation_messages)
