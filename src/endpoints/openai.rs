@@ -5,7 +5,6 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use rig::{completion::Prompt, providers::openai};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use shuttle_openai::async_openai::types::{
@@ -84,22 +83,6 @@ pub async fn create_chat(State(state): State<AppState>, claims: Claims) -> impl 
     Json(Response::new(convo_id, String::new()))
 }
 
-pub async fn speech(State(state): State<AppState>, claims: Claims) -> impl IntoResponse {
-    let ConversationId(convo_id) = sqlx::query_as(
-        r#"INSERT INTO conversations
-        (user_id)
-        VALUES
-        ($1)
-        RETURNING id"#,
-    )
-    .bind(claims.user_id())
-    .fetch_one(&state.db)
-    .await
-    .unwrap();
-
-    Json(Response::new(convo_id, String::new()))
-}
-
 pub async fn get_conversation_list(
     State(state): State<AppState>,
     claims: Claims,
@@ -112,22 +95,6 @@ pub async fn get_conversation_list(
             .unwrap();
 
     Json(conversation_ids)
-}
-
-pub async fn rig(State(state): State<AppState>, claims: Claims) -> impl IntoResponse {
-    // Create OpenAI client and model
-    // This requires the `OPENAI_API_KEY` environment variable to be set.
-    let openai_client = openai::Client::from_env();
-
-    let gpt4 = openai_client.agent("gpt-4").build();
-
-    // Prompt the model and print its response
-    let response = gpt4
-        .prompt("Who are you?")
-        .await
-        .expect("Failed to prompt GPT-4");
-
-    Json(response)
 }
 
 pub async fn fetch_conversation_messages(

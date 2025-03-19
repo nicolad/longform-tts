@@ -34,7 +34,7 @@ export default function SpeechPage() {
             rows={5}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="border w-full p-2 color-black"
+            className="border w-full p-2 text-black"
           />
         </div>
         <button

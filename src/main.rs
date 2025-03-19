@@ -10,6 +10,7 @@ use axum::{
 pub mod endpoints;
 pub mod state;
 
+use crate::endpoints::speech::speech;
 use shuttle_openai::async_openai::{config::OpenAIConfig, Client};
 use shuttle_runtime::DeploymentMetadata;
 use shuttle_runtime::SecretStore;
@@ -56,8 +57,7 @@ async fn main(
             "/api/chat/conversations",
             get(endpoints::openai::get_conversation_list),
         )
-        .route("/api/chat/rig", get(endpoints::openai::rig))
-        .route("/api/speech", post(endpoints::openai::speech))
+        .route("/api/speech", post(speech))
         .route(
             "/api/chat/conversations/:id",
             get(endpoints::openai::fetch_conversation_messages)
