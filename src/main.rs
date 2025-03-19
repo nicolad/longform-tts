@@ -8,6 +8,7 @@ use axum::{
 };
 
 pub mod endpoints;
+pub mod services;
 pub mod state;
 
 use crate::endpoints::speech::speech;
