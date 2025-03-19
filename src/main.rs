@@ -10,6 +10,7 @@ use axum::{
 pub mod endpoints;
 pub mod services;
 pub mod state;
+pub mod utils;
 
 use crate::endpoints::speech::speech;
 use shuttle_openai::async_openai::{config::OpenAIConfig, Client};
