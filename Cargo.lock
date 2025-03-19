@@ -1985,6 +1985,7 @@ dependencies = [
  "sqlx",
  "tokio",
  "tower-http",
+ "unicode-segmentation",
 ]
 
 [[package]]
