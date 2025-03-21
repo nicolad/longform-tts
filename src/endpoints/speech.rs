@@ -14,6 +14,9 @@ use tokio::task;
 use crate::utils::chunk_text_unicode::chunk_text_unicode;
 use crate::utils::concat_mp3::concat_mp3;
 
+// Add chrono for date/time folder naming
+use chrono::Local;
+
 #[derive(Deserialize)]
 pub struct UserInput {
     pub input: String,
@@ -52,7 +55,18 @@ pub async fn speech(
         return (StatusCode::BAD_REQUEST, Json(err));
     }
 
-    // 3) For each chunk, spawn a parallel TTS task
+    // 3) Create a folder named with the current date/time, e.g. "2025-03-21-12:25"
+    let now = Local::now();
+    let folder_name = now.format("%Y-%m-%d-%H:%M").to_string();
+    if let Err(e) = fs::create_dir_all(&folder_name) {
+        let err = json!({ "error": format!("Failed to create directory {folder_name}: {e}") });
+        println!("Error creating directory {}: {}", folder_name, e);
+        return (StatusCode::INTERNAL_SERVER_ERROR, Json(err));
+    }
+
+    println!("Created or verified existence of folder: {}", folder_name);
+
+    // 4) For each chunk, spawn a parallel TTS task
     println!("Spawning parallel tasks for TTS calls...");
     let mut tasks = Vec::new();
     for (i, chunk) in chunks.iter().enumerate() {
@@ -62,24 +76,24 @@ pub async fn speech(
         let index = i + 1;
         println!("  -> Chunk #{index}: length = {} graphemes", chunk.len());
 
+        // Construct the output path for this chunk
+        let chunk_filename = format!("{}/speech-chunk-{}.mp3", folder_name, index);
+
         tasks.push(task::spawn(async move {
             println!("  -> [Task {index}] calling TTS...");
             let tts_result = call_openai_tts(&api_key_cloned, &chunk_cloned, &voice).await;
             match tts_result {
-                Ok(bytes) => {
-                    let filename = format!("speech-chunk-{index}.mp3");
-                    match fs::write(&filename, &bytes) {
-                        Ok(_) => {
-                            println!("  -> [Task {index}] wrote {filename}");
-                            Ok(filename)
-                        }
-                        Err(e) => {
-                            let msg = format!("Failed to write {filename}: {e}");
-                            println!("  -> [Task {index}] error: {msg}");
-                            Err(msg)
-                        }
+                Ok(bytes) => match fs::write(&chunk_filename, &bytes) {
+                    Ok(_) => {
+                        println!("  -> [Task {index}] wrote {chunk_filename}");
+                        Ok(chunk_filename)
                     }
-                }
+                    Err(e) => {
+                        let msg = format!("Failed to write {chunk_filename}: {e}");
+                        println!("  -> [Task {index}] error: {msg}");
+                        Err(msg)
+                    }
+                },
                 Err(msg) => {
                     let full_msg = format!("Chunk {index} TTS error: {msg}");
                     println!("  -> [Task {index}] TTS error: {full_msg}");
@@ -89,7 +103,7 @@ pub async fn speech(
         }));
     }
 
-    // 4) Wait for all tasks
+    // 5) Wait for all tasks
     println!("All tasks spawned; waiting on join_all...");
     let results = join_all(tasks).await;
     println!("join_all completed; analyzing results...");
@@ -116,26 +130,26 @@ pub async fn speech(
         }
     }
 
-    // 5) Now we do a naive merge of those chunk MP3s
-    let final_mp3 = "speech-merged.mp3";
+    // 6) Now we do a naive merge of those chunk MP3s
+    let final_mp3_path = format!("{}/speech-merged.mp3", folder_name);
     println!(
-        "Merging {} chunk(s) with naive_concat_mp3 => {}",
+        "Merging {} chunk(s) => {}",
         saved_files.len(),
-        final_mp3
+        final_mp3_path
     );
     let saved_files_ref: Vec<&str> = saved_files.iter().map(|s| s.as_str()).collect();
-    if let Err(e) = concat_mp3(&saved_files_ref, final_mp3) {
+    if let Err(e) = concat_mp3(&saved_files_ref, &final_mp3_path) {
         println!("Error merging MP3: {}", e);
         let err = json!({ "error": format!("Failed to merge mp3: {e}") });
         return (StatusCode::INTERNAL_SERVER_ERROR, Json(err));
     }
 
-    // 6) Return success
-    println!("All chunks processed + merged => {}", final_mp3);
+    // 7) Return success
+    println!("All chunks processed + merged => {}", final_mp3_path);
     let response = json!({
         "message": "All chunks processed in parallel and merged",
         "files": saved_files,
-        "merged_file": final_mp3,
+        "merged_file": final_mp3_path,
     });
     (StatusCode::OK, Json(response))
 }
